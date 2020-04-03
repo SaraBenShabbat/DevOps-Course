@@ -1,8 +1,6 @@
-# DevOps Protfolio - Sara Ben Shabbat
+# DevOps Portfolio - Sara Ben Shabbat
 
-The repository contains my DevOps Portfolio, organized by directories with informaive names.
-
-
+The repository contains my DevOps portfolio, organized by directories with informaive names.
 
 
 
@@ -11,4 +9,6 @@ The repository contains my DevOps Portfolio, organized by directories with infor
 
 
 
-Jenkins Jobs - <br>
+
+
+<br><br><br><br><br><br><br>Jenkins Jobs - <br>
