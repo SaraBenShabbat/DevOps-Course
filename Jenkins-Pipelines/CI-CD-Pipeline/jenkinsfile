@@ -5,7 +5,7 @@ node('master'){
     }
 
     stage('Analyzing'){
-        // sh label: '', script: "mvn verify sonar:sonar"
+        sh label: '', script: "mvn verify sonar:sonar"
     }
 
     stage('Building'){
