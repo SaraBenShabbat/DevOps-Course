@@ -1,0 +1,41 @@
+node('master'){
+    
+    withEnv(["ECR_URI=298462339472.dkr.ecr.eu-west-1.amazonaws.com/java-app",
+             "ECR_NAME=java-app",
+             "VERSION=${BUILD_ID}"]){ 
+
+        stage('Checking Out Code'){
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/SaraBenShabbat/hello-world-war']]])    
+        }
+    
+        stage('Analyzing'){
+            sh label: '', script: 'mvn clean verify sonar:sonar'
+        }
+    
+        stage('Building'){
+            sh label: '', script: 'mvn clean package'
+        }
+    
+        stage('Building Docker Image'){
+            checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'GitHub', url: 'https://github.com/SaraBenShabbat/CI-CD-AWS-Docker.git']]])    
+            sh label: '', script: '''cp ${WORKSPACE}/target/hello-world-war-1.0.${VERSION}.war ${WORKSPACE}
+                                     docker build --build-arg VERSION="${VERSION}" -t ${ECR_NAME}:${VERSION} .'''                                
+        }
+    
+        stage('Push Docker Image to ECR'){
+            // This step should not normally be used in your script. Consult the inline help for details.
+            sh label: '', script: '$(aws ecr get-login --no-include-email | sed \'s|https://||\')'
+
+        
+            withDockerRegistry(url: '${ECR_URI}') {
+                sh label: '', script: '''docker tag ${ECR_NAME}:${VERSION} ${ECR_URI}:${VERSION}
+                                         docker push ${ECR_URI}:${VERSION}'''
+            }
+        
+            sh label: '', script: '''docker rmi $(docker images --filter=reference="*${ECR_NAME}:${VERSION}" -q) -f
+                                     docker logout ${ECR_URI}'''
+        }
+        
+    }
+    
+}
