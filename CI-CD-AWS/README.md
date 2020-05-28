@@ -7,4 +7,4 @@ The directory named 'jenkins-auto-setup' is for stroing the terraform HCL files 
 The directory named Docker for all the needed files for creating a docker image for the artifact of the application code.
 
 The file named jenkinsfile includes the jenkins pipeline for the CI CD process. 
-(- I have to finish it by adding stages of setting up EKS using Terraform and deploy the app using K8S deployment resource via the EKS.)
+(- I have to finish it by adding stages of setting up EKS using Terraformת deploy the app using K8S deployment resource via the EKS שמג notify slack in which status the pipline has finished.)
