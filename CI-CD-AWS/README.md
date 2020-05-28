@@ -1,4 +1,4 @@
-# CI CD AWS
+# Complete CI CD Process using AWS resources
 
 A directory for an automatic complete CI CD process from scratch.
 
