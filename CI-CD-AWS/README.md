@@ -2,7 +2,7 @@
 
 A directory for an automatic complete CI CD process from scratch.
 
-The directory named 'jenkins-auto-setup' stores the terraform HCL files for setting up a jenkins server including VPC, Security Group etc. using Packer for customming AWS AMI.
+The directory named 'jenkins-auto-setup' stores the terraform HCL files for provisioning a jenkins server including VPC, Security Group etc. using Packer for customming AWS AMI.
 In addition, the state of the infrastrucres have just been built via terraform - is stored on AWS S3 called 'terraform-jenkins-0'.
 
 The directory named 'Docker' is for all the needed files for creating a docker image that will wrap the artifact of the application code.
