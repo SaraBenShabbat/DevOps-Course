@@ -1,0 +1,51 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Description" : "A sample template",
+    "Mappings": {
+      "RegionMap": {
+        "eu-west-1": {
+          "AMI": "ami-0ea3405d2d2522162"
+        },
+        "eu-west-2": {
+          "AMI": "ami-0330ffc12d7224386"
+        },
+        "eu-central-1":{
+          "AMI": "ami-0a02ee601d742e89f"
+        }
+      }
+    },
+    "Resources" : {
+      "MyEC2Instance" : {
+        "Type" : "AWS::EC2::Instance",
+        "Properties" : {
+          "ImageId": {
+            "Fn::FindInMap": [
+              "RegionMap",
+              {
+                "Ref": "AWS::Region"
+              },
+              "AMI"
+            ]
+          },
+          "InstanceType" : "t2.micro",
+          "BlockDeviceMappings" : [
+            {
+              "DeviceName" : "/dev/sdm",
+              "Ebs" : {
+                "VolumeType" : "io1",
+                "Iops" : "200",
+                "DeleteOnTermination" : "false",
+                "VolumeSize" : "20"
+              }
+            }
+          ]
+        }
+      },
+      "MyEIP" : {
+        "Type" : "AWS::EC2::EIP",
+        "Properties" : {
+          "InstanceId" : {"Ref": "MyEC2Instance"}
+        }
+      }
+    }
+  }
