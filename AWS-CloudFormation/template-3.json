@@ -3,7 +3,7 @@
         "InstanceType":{
             "Description": "WebServer EC2 instance type",
             "Type": "String",
-            "Default": "t2.small",
+            "Default": "t2.micro",
             "AllowedValues" : [ 
                 "t1.micro", 
                 "t2.nano", 
@@ -91,6 +91,28 @@
         }
     },
     "Resources": {
+        "SecurityGrp":{
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupName" : "SecurityGrp",
+                "GroupDescription" : "Stage Security Group",
+                "SecurityGroupIngress" : [
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "80",
+                        "ToPort" : "80",
+                        "CidrIp" : "0.0.0.0/0"
+                    },{
+                        "IpProtocol" : "tcp",
+                        "FromPort" : "22",
+                        "ToPort" : "22",
+                        "CidrIp": {
+                            "Ref": "SSHLocation"
+                        }                    
+                    }
+                ]
+            }
+        },
         "WebServer": {
             "Type": "AWS::EC2::Instance",
             "Properties": {
@@ -108,8 +130,11 @@
                 },
                 "InstanceType" : {
                     "Ref": "InstanceType"
-                }
+                },
+                "SecurityGroupIds": [{
+                    "Ref": "SecurityGrp"
+                }]
             }
-        }
+        }     
     }
 }
