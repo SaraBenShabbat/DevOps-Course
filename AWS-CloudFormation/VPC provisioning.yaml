@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Deploy a VPC
+
+Resources:
+# The name of the vpc resource.
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16 
+      # A range of 16 bits for internal ip addresses for communicating inside the network. (- required.)
+      EnableDnsHostnames: true
+      # Dis/Enable attaching an hostname corresponds to any (- public.) ip address in the vpc. 
+      # Not required and by default the value is false.
+      Tags:
+      # Tags for vpc. (- not required.)
+      - Key: Name
+        Value: Lab VPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    # The router (- a modem or pc, but not a cable.) which thanks to it - we're able to communicate with the
+    # internet. It routes traffic from your pc to external networks; for basic internet connections at home -
+    # the gateway is the internet service provider that gices you access to the internet.
+    Properties:
+      Tags:
+      # Tags for the internet gateway. (- not required.)
+      - Key: Name
+        Value: Lab Internet Gateway
+
+  AttachGateway:
+    # Attaching the above allocated internet gateway to the above allocated vpc.
+    Type: AWS::EC2::VPCGatewayAttachment
+    # A resource for attaching an internet gateway for a vpc.
+    Properties:
+      VpcId: !Ref VPC
+      # The id of the vpc - the one we've devined before, for the above allocated vpc.
+      InternetGatewayId: !Ref InternetGateway
+      # The id of the internet gateway - the one we've defined before, for the above allocated internet gateway.
+
+# Resources in public subnet can send outbound traffic directly to the internet, whereas the resources in the
+# private subnects can't. 
+# Instead, the instances in the private subnet can access the internet by using a NAT gateway that resides in
+# the public subnet.
+# These instances can connect to the internet for sw updates using the NAT gateway, bu the internet can't 
+# establish connections to these instances.
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.0.0/24
+      AvailabilityZone: !Select 
+        - '0'
+        - !GetAZs ''
+      Tags:
+        - Key: Name
+          Value: Public Subnet 1
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select 
+        - '0'
+        - !GetAZs ''
+      Tags:
+        - Key: Name
+          Value: Private Subnet 1
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Public Route Table
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+      - Key: Name
+        Value: Private Route Table
+
+  PrivateSubnetRouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+Outputs:
+  VPC:
+    Description: VPC
+    Value: !Ref VPC
+  AZ1:
+    Description: Availability Zone 1
+    Value: !GetAtt 
+      - PublicSubnet1
+      - AvailabilityZone
