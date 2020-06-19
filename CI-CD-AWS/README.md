@@ -1,4 +1,4 @@
-#- CI CD Process using AWS resources. -
+# - CI CD Process using AWS resources. -
 
 A directory for an automatic CI CD process from scratch.
 
