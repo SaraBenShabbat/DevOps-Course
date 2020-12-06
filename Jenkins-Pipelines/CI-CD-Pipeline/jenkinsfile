@@ -24,9 +24,9 @@ node('master'){
         def temp = 1;
         prevArtifact = prevArtifact - temp;
         // The next line has to be run instead of the next one; In this way, Every time the pipeline deploys the previous srtifact. I really don't know why it doesn't recognize ${prevArtifact}. (- It contains the correct value.)
-        //sh label: '', script: '''curl -u admin:84920000Sbs_ -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war  -d maven.baseVersion=1.0.${prevArtifact} -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${prevArtifact}.war'''
+        //sh label: '', script: '''curl -u admin:< admin pwd > -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war  -d maven.baseVersion=1.0.${prevArtifact} -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${prevArtifact}.war'''
 
-        sh label: '', script: '''curl -u admin:84920000Sbs_ -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war -d maven.baseVersion=1.0.82 -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${BUILD_ID}.war'''
+        sh label: '', script: '''curl -u admin:< admin pwd > -sSL -X GET -G  "http://192.168.0.129:8081/service/rest/v1/search/assets" -d repository=maven-hosted-DSL -d maven.groupId=com.efsavage -d maven.artifactId=hello-world-war -d maven.baseVersion=1.0.82 -d maven.extension=war  | grep -Po \'"downloadUrl" : "\\K.+(?=",)\' | xargs curl -fsSL -o /opt/tomcat/apache-tomcat-9.0.30/webapps/hello-world-war-1.0.${BUILD_ID}.war'''
     }
 
 }
